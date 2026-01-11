@@ -16,11 +16,11 @@ class AppConstants {
   static String get baseUrl =>
       _mockEnv?['BASE_URL'] ?? dotenv.env['BASE_URL'] ?? '';
   static int get connectTimeout => int.parse(
-        _mockEnv?['CONNECT_TIMEOUT'] ?? dotenv.env['CONNECT_TIMEOUT'] ?? '30000',
-      );
+    _mockEnv?['CONNECT_TIMEOUT'] ?? dotenv.env['CONNECT_TIMEOUT'] ?? '30000',
+  );
   static int get receiveTimeout => int.parse(
-        _mockEnv?['RECEIVE_TIMEOUT'] ?? dotenv.env['RECEIVE_TIMEOUT'] ?? '30000',
-      );
+    _mockEnv?['RECEIVE_TIMEOUT'] ?? dotenv.env['RECEIVE_TIMEOUT'] ?? '30000',
+  );
 
   // Storage Keys
   static const String tokenKey = 'auth_token';
