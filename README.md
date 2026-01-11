@@ -2,6 +2,24 @@
 
 This project is a production-ready Flutter template designed for scalability, testability, and maintainability. It implements the **MVVM (Model-View-ViewModel)** pattern combined with **Clean Architecture** principles.
 
+## 🛠️ Usage & Tooling
+
+We include helper scripts to make your life easier.
+
+### 1. Rename Project
+To rename this template to your own project name:
+```bash
+./scripts/rename_project.sh my_amazing_app
+```
+
+### 2. Makefile Helpers
+We provide a `Makefile` for common commands:
+
+- `make watch`: Run `build_runner` in watch mode (for Riverpod/Freezed).
+- `make gen-l10n`: Regenerate localization files.
+- `make clean`: Clean build cache.
+- `make fix`: Apply auto-fixes to lint issues.
+
 ## 🏗 Architecture Overview
 
 The project follows a **Feature-First** structure, where each feature (e.g., `auth`, `profile`, `feed`) is self-contained with its own Data, Domain, and Presentation layers.
