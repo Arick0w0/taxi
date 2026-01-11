@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_mvvm_101/l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../core/utils/connectivity_service.dart';
 import '../../core/router/app_router.dart';
@@ -38,17 +39,15 @@ class _GlobalConnectionWatcherState
             builder: (context) => WillPopScope(
               onWillPop: () async => false, // Prevent back button closing
               child: AlertDialog(
-                title: const Text('No Internet Connection'),
-                content: const Text(
-                  'Please check your network settings and try again.',
-                ),
+                title: Text(S.of(context)!.noInternet),
+                content: Text(S.of(context)!.checkNetworkMessage),
                 actions: [
                   TextButton(
                     onPressed: () {
                       debugPrint('🔄 Retry button pressed');
                       ref.read(connectivityServiceProvider).refreshConnection();
                     },
-                    child: const Text('Retry'),
+                    child: Text(S.of(context)!.retry),
                   ),
                 ],
               ),

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_mvvm_101/l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../../../../core/localization/locale_provider.dart';
 import '../viewmodel/user_viewmodel.dart';
 import '../viewmodel/user_state.dart';
 import '../../../../shared/widgets/app_loading_indicator.dart';
@@ -30,8 +32,15 @@ class _UserListViewState extends ConsumerState<UserListView> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Users'),
+        title: Text(S.of(context)!.userListTitle),
         actions: [
+          IconButton(
+            icon: const Icon(Icons.language),
+            tooltip: S.of(context)!.changeLanguage,
+            onPressed: () {
+              ref.read(localeProvider.notifier).toggleLocale();
+            },
+          ),
           IconButton(
             icon: const Icon(Icons.refresh),
             onPressed: () =>

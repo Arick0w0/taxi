@@ -1,0 +1,11 @@
+{
+    "userListTitle": "User List",
+    "@userListTitle": {
+      "description": "The title of the user list screen"
+    },
+    "changeLanguage": "Change Language",
+    "hello": "Hello World",
+    "noInternet": "No Internet Connection",
+    "checkNetworkMessage": "Please check your network settings and try again.",
+    "retry": "Retry"
+}
