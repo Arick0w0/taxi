@@ -6,6 +6,9 @@ import '../../../../core/error/exceptions.dart';
 class UserViewModel extends Notifier<UserState> {
   @override
   UserState build() {
+    // Fetch data immediately when the provider is initialized
+    // This allows the UI to be Stateless
+    Future.microtask(() => fetchUsers());
     return const UserState();
   }
 

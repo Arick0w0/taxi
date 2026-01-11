@@ -4,38 +4,18 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/localization/locale_provider.dart';
 import '../viewmodel/user_viewmodel.dart';
 import '../viewmodel/user_state.dart';
-import 'package:skeletonizer/skeletonizer.dart';
-import '../../data/model/user_model.dart';
 import '../widgets/user_list_tile.dart';
 import '../../../../shared/widgets/skeletons/skeleton_widgets.dart';
 import '../../../../shared/widgets/app_primary_button.dart';
 import '../../../../shared/widgets/payment_processing_dialog.dart';
 import '../../../../core/theme/app_dimens.dart';
 import '../../../../shared/widgets/app_error_view.dart';
-// import '../../../../core/utils/connectivity_service.dart'; // No longer needed here
 
-class UserListView extends ConsumerStatefulWidget {
+class UserListView extends ConsumerWidget {
   const UserListView({super.key});
 
   @override
-  ConsumerState<UserListView> createState() => _UserListViewState();
-}
-
-class _UserListViewState extends ConsumerState<UserListView> {
-  // Option A (Cleanest): Generic Skeletons
-  // We don't need _loadingUsers anymore if we use Option B.
-
-  @override
-  void initState() {
-    super.initState();
-    // Fetch data on init
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      ref.read(userViewModelProvider.notifier).fetchUsers();
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     // Listen to ViewModel state
     final userState = ref.watch(userViewModelProvider);
 
@@ -52,8 +32,9 @@ class _UserListViewState extends ConsumerState<UserListView> {
           ),
           IconButton(
             icon: const Icon(Icons.refresh),
-            onPressed: () =>
-                ref.read(userViewModelProvider.notifier).fetchUsers(),
+            onPressed: () => ref
+                .read(userViewModelProvider.notifier)
+                .fetchUsers(isRefresh: true),
           ),
         ],
       ),
@@ -79,13 +60,17 @@ class _UserListViewState extends ConsumerState<UserListView> {
           if (userState.status == UserStatus.error) {
             return AppErrorView(
               message: userState.errorMessage ?? 'Unknown error',
-              onRetry: () =>
-                  ref.read(userViewModelProvider.notifier).fetchUsers(),
+              onRetry: () => ref
+                  .read(userViewModelProvider.notifier)
+                  .fetchUsers(isRefresh: true),
             );
           }
 
           // 1. Page Load (Skeleton)
-          final isLoading = userState.status == UserStatus.loading;
+          // Also show skeleton if initial (not yet fetched started)
+          final isLoading =
+              userState.status == UserStatus.loading ||
+              userState.status == UserStatus.initial;
 
           return AppSkeleton(
             enabled: isLoading,
@@ -96,6 +81,11 @@ class _UserListViewState extends ConsumerState<UserListView> {
               itemBuilder: (context, index) {
                 if (isLoading) {
                   return const SkeletonListTile();
+                }
+
+                // Safety check for empty list after loading
+                if (userState.users.isEmpty) {
+                  return const SizedBox(); // Or empty view
                 }
 
                 final user = userState.users[index];
