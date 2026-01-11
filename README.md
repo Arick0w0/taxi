@@ -7,12 +7,15 @@ This project is a production-ready Flutter template designed for scalability, te
 We include helper scripts to make your life easier.
 
 ### 1. Rename Project
+
 To rename this template to your own project name:
+
 ```bash
 ./scripts/rename_project.sh my_amazing_app
 ```
 
 ### 2. Makefile Helpers
+
 We provide a `Makefile` for common commands:
 
 - `make watch`: Run `build_runner` in watch mode (for Riverpod/Freezed).
