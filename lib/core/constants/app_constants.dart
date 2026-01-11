@@ -9,11 +9,18 @@ class AppConstants {
   static const String buildNumber = '1';
 
   // Network
-  static String get baseUrl => dotenv.env['BASE_URL'] ?? '';
-  static int get connectTimeout =>
-      int.parse(dotenv.env['CONNECT_TIMEOUT'] ?? '30000');
-  static int get receiveTimeout =>
-      int.parse(dotenv.env['RECEIVE_TIMEOUT'] ?? '30000');
+  // Helper for testing allows injecting mock values
+  static Map<String, String>? _mockEnv;
+  static void setMockEnv(Map<String, String> env) => _mockEnv = env;
+
+  static String get baseUrl =>
+      _mockEnv?['BASE_URL'] ?? dotenv.env['BASE_URL'] ?? '';
+  static int get connectTimeout => int.parse(
+        _mockEnv?['CONNECT_TIMEOUT'] ?? dotenv.env['CONNECT_TIMEOUT'] ?? '30000',
+      );
+  static int get receiveTimeout => int.parse(
+        _mockEnv?['RECEIVE_TIMEOUT'] ?? dotenv.env['RECEIVE_TIMEOUT'] ?? '30000',
+      );
 
   // Storage Keys
   static const String tokenKey = 'auth_token';
