@@ -4,7 +4,7 @@ import '../viewmodel/user_viewmodel.dart';
 import '../viewmodel/user_state.dart';
 import '../../../../shared/widgets/app_loading_indicator.dart';
 import '../../../../shared/widgets/app_error_view.dart';
-import '../../../../core/utils/connectivity_service.dart';
+// import '../../../../core/utils/connectivity_service.dart'; // No longer needed here
 
 class UserListView extends ConsumerStatefulWidget {
   const UserListView({super.key});
@@ -25,9 +25,6 @@ class _UserListViewState extends ConsumerState<UserListView> {
 
   @override
   Widget build(BuildContext context) {
-    // Listen to connectivity changes globally for this view if needed
-    final connectivityStatus = ref.watch(connectivityStatusProvider);
-
     // Listen to ViewModel state
     final userState = ref.watch(userViewModelProvider);
 
@@ -44,15 +41,6 @@ class _UserListViewState extends ConsumerState<UserListView> {
       ),
       body: Builder(
         builder: (context) {
-          // Optional: Show no internet screen if completely disconnected and no data
-          if (connectivityStatus.value == ConnectivityStatus.isDisconnected &&
-              userState.users.isEmpty) {
-            return AppErrorView.noInternet(
-              onRetry: () =>
-                  ref.read(userViewModelProvider.notifier).fetchUsers(),
-            );
-          }
-
           switch (userState.status) {
             case UserStatus.loading:
               return const AppLoadingIndicator();

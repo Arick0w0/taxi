@@ -2,23 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../features/sample_feature/presentation/view/user_list_view.dart';
+import '../auth/auth_provider.dart';
 
 enum AppRoute { home, login, splash }
 
-// Simple auth state for demonstration of redirect
-class AuthNotifier extends Notifier<bool> {
-  @override
-  bool build() => true; // Assume logged in for demo
-}
-
-final authStateProvider = NotifierProvider<AuthNotifier, bool>(
-  AuthNotifier.new,
-);
+final rootNavigatorKey = GlobalKey<NavigatorState>();
 
 final goRouterProvider = Provider<GoRouter>((ref) {
   final authState = ref.watch(authStateProvider);
 
   return GoRouter(
+    navigatorKey: rootNavigatorKey,
     initialLocation: '/',
     debugLogDiagnostics: true,
     redirect: (context, state) {

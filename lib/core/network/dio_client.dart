@@ -1,23 +1,34 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../error/exceptions.dart';
+import '../auth/auth_provider.dart';
+import '../auth/token_storage.dart';
 
 final dioProvider = Provider<Dio>((ref) {
   final dio = Dio();
   dio.options.baseUrl = 'https://jsonplaceholder.typicode.com';
   dio.options.connectTimeout = const Duration(seconds: 5);
   dio.options.receiveTimeout = const Duration(seconds: 3);
-
+  
   dio.interceptors.add(
     InterceptorsWrapper(
-      onRequest: (options, handler) {
-        // Add auth headers if needed
-        // options.headers['Authorization'] = 'Bearer ...';
+      onRequest: (options, handler) async {
+        try {
+          // Get token from storage
+          final tokenStorage = ref.read(tokenStorageProvider);
+          final token = await tokenStorage.getToken();
+          if (token != null) {
+            options.headers['Authorization'] = 'Bearer $token';
+          }
+        } catch (e) {
+          // Ignore error reading token
+        }
         return handler.next(options);
       },
-      onError: (DioException e, handler) {
+      onError: (DioException e, handler) async {
         if (e.response?.statusCode == 401) {
-          // Handle Unauthorized
+             // Handle Unauthorized - Auto Logout
+             ref.read(authStateProvider.notifier).logout();
         }
         return handler.next(e);
       },
