@@ -1,14 +1,19 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../constants/app_constants.dart';
 import '../error/exceptions.dart';
 import '../auth/auth_provider.dart';
 import '../auth/token_storage.dart';
 
 final dioProvider = Provider<Dio>((ref) {
   final dio = Dio();
-  dio.options.baseUrl = 'https://jsonplaceholder.typicode.com';
-  dio.options.connectTimeout = const Duration(seconds: 5);
-  dio.options.receiveTimeout = const Duration(seconds: 3);
+  dio.options.baseUrl = AppConstants.baseUrl;
+  dio.options.connectTimeout = Duration(
+    milliseconds: AppConstants.connectTimeout,
+  );
+  dio.options.receiveTimeout = Duration(
+    milliseconds: AppConstants.receiveTimeout,
+  );
 
   dio.interceptors.add(
     InterceptorsWrapper(
@@ -55,7 +60,56 @@ class DioClient {
     }
   }
 
-  // Add post, put, delete methods as needed
+  Future<dynamic> post(
+    String uri, {
+    dynamic data,
+    Map<String, dynamic>? queryParameters,
+  }) async {
+    try {
+      final response = await _dio.post(
+        uri,
+        data: data,
+        queryParameters: queryParameters,
+      );
+      return response.data;
+    } on DioException catch (e) {
+      throw _handleError(e);
+    }
+  }
+
+  Future<dynamic> put(
+    String uri, {
+    dynamic data,
+    Map<String, dynamic>? queryParameters,
+  }) async {
+    try {
+      final response = await _dio.put(
+        uri,
+        data: data,
+        queryParameters: queryParameters,
+      );
+      return response.data;
+    } on DioException catch (e) {
+      throw _handleError(e);
+    }
+  }
+
+  Future<dynamic> delete(
+    String uri, {
+    dynamic data,
+    Map<String, dynamic>? queryParameters,
+  }) async {
+    try {
+      final response = await _dio.delete(
+        uri,
+        data: data,
+        queryParameters: queryParameters,
+      );
+      return response.data;
+    } on DioException catch (e) {
+      throw _handleError(e);
+    }
+  }
 
   Exception _handleError(DioException e) {
     switch (e.type) {

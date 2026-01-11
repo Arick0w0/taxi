@@ -1,20 +1,21 @@
 import 'package:flutter/material.dart';
+import 'app_dimens.dart';
 
 class AppTextStyles {
   AppTextStyles._();
 
   static const TextStyle displayLarge = TextStyle(
-    fontSize: 57,
+    fontSize: AppDimens.fontDisplay,
     fontWeight: FontWeight.bold,
   );
 
   static const TextStyle bodyLarge = TextStyle(
-    fontSize: 16,
+    fontSize: AppDimens.fontL,
     fontWeight: FontWeight.normal,
   );
 
   static const TextStyle labelLarge = TextStyle(
-    fontSize: 14,
+    fontSize: AppDimens.fontM,
     fontWeight: FontWeight.w500,
   );
 }

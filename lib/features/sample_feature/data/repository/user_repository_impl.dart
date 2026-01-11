@@ -1,21 +1,29 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../../../core/network/dio_client.dart';
 import '../../domain/repository/user_repository.dart';
+import '../datasources/user_remote_datasource.dart';
 import '../model/user_model.dart';
 
 class UserRepositoryImpl implements UserRepository {
-  final DioClient _dioClient;
+  final UserRemoteDataSource _remoteDataSource;
 
-  UserRepositoryImpl(this._dioClient);
+  UserRepositoryImpl(this._remoteDataSource);
 
   @override
-  Future<List<UserModel>> getUsers() async {
-    final response = await _dioClient.get('/users');
-    final List<dynamic> data = response;
-    return data.map((json) => UserModel.fromJson(json)).toList();
+  Future<List<UserModel>> getUsers() {
+    return _remoteDataSource.getUsers();
+  }
+
+  @override
+  Future<UserModel> createUser(Map<String, dynamic> data) {
+    return _remoteDataSource.createUser(data);
+  }
+
+  @override
+  Future<UserModel> updateUser(String id, Map<String, dynamic> data) {
+    return _remoteDataSource.updateUser(id, data);
   }
 }
 
 final userRepositoryProvider = Provider<UserRepository>((ref) {
-  return UserRepositoryImpl(ref.watch(dioClientProvider));
+  return UserRepositoryImpl(ref.watch(userRemoteDataSourceProvider));
 });
