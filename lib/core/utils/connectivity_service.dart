@@ -32,11 +32,14 @@ class ConnectivityService {
     });
   }
 
-  Future<void> _checkAndBroadcastScheduler([List<ConnectivityResult>? results]) async {
+  Future<void> _checkAndBroadcastScheduler([
+    List<ConnectivityResult>? results,
+  ]) async {
     try {
       // Use passed results if available, otherwise fetch fresh
-      final effectiveResults = results ?? await _connectivity.checkConnectivity();
-      
+      final effectiveResults =
+          results ?? await _connectivity.checkConnectivity();
+
       final status = await _checkStatus(effectiveResults);
       if (!_controller.isClosed) {
         _controller.add(status);

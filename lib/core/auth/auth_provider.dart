@@ -8,7 +8,7 @@ class AuthNotifier extends Notifier<bool> {
   bool build() {
     _tokenStorage = ref.read(tokenStorageProvider);
     // Check if token exists on startup (mock logic)
-    return true; 
+    return true;
   }
 
   Future<void> login(String token) async {
@@ -22,4 +22,6 @@ class AuthNotifier extends Notifier<bool> {
   }
 }
 
-final authStateProvider = NotifierProvider<AuthNotifier, bool>(AuthNotifier.new);
+final authStateProvider = NotifierProvider<AuthNotifier, bool>(
+  AuthNotifier.new,
+);

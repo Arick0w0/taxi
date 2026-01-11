@@ -27,4 +27,6 @@ class InMemoryTokenStorage implements TokenStorage {
   }
 }
 
-final tokenStorageProvider = Provider<TokenStorage>((ref) => InMemoryTokenStorage());
+final tokenStorageProvider = Provider<TokenStorage>(
+  (ref) => InMemoryTokenStorage(),
+);

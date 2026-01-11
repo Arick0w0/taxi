@@ -9,7 +9,7 @@ final dioProvider = Provider<Dio>((ref) {
   dio.options.baseUrl = 'https://jsonplaceholder.typicode.com';
   dio.options.connectTimeout = const Duration(seconds: 5);
   dio.options.receiveTimeout = const Duration(seconds: 3);
-  
+
   dio.interceptors.add(
     InterceptorsWrapper(
       onRequest: (options, handler) async {
@@ -27,8 +27,8 @@ final dioProvider = Provider<Dio>((ref) {
       },
       onError: (DioException e, handler) async {
         if (e.response?.statusCode == 401) {
-             // Handle Unauthorized - Auto Logout
-             ref.read(authStateProvider.notifier).logout();
+          // Handle Unauthorized - Auto Logout
+          ref.read(authStateProvider.notifier).logout();
         }
         return handler.next(e);
       },
