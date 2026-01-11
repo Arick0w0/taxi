@@ -4,7 +4,13 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/localization/locale_provider.dart';
 import '../viewmodel/user_viewmodel.dart';
 import '../viewmodel/user_state.dart';
-import '../../../../shared/widgets/app_loading_indicator.dart';
+import 'package:skeletonizer/skeletonizer.dart';
+import '../../data/model/user_model.dart';
+import '../widgets/user_list_tile.dart';
+import '../../../../shared/widgets/skeletons/skeleton_widgets.dart';
+import '../../../../shared/widgets/app_primary_button.dart';
+import '../../../../shared/widgets/payment_processing_dialog.dart';
+import '../../../../core/theme/app_dimens.dart';
 import '../../../../shared/widgets/app_error_view.dart';
 // import '../../../../core/utils/connectivity_service.dart'; // No longer needed here
 
@@ -16,6 +22,9 @@ class UserListView extends ConsumerStatefulWidget {
 }
 
 class _UserListViewState extends ConsumerState<UserListView> {
+  // Option A (Cleanest): Generic Skeletons
+  // We don't need _loadingUsers anymore if we use Option B.
+
   @override
   void initState() {
     super.initState();
@@ -48,41 +57,58 @@ class _UserListViewState extends ConsumerState<UserListView> {
           ),
         ],
       ),
+      floatingActionButton: AppPrimaryButton(
+        text: 'Simulate Payment',
+        onPressed: () async {
+          // 5. Payment / Critical Action (Blocking Dialog)
+          PaymentProcessingDialog.show(context);
+
+          // Simulate network delay
+          await Future.delayed(const Duration(seconds: 3));
+
+          if (context.mounted) {
+            Navigator.of(context).pop(); // Close dialog
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text('Payment Successful!')),
+            );
+          }
+        },
+      ),
       body: Builder(
         builder: (context) {
-          switch (userState.status) {
-            case UserStatus.loading:
-              return const AppLoadingIndicator();
-            case UserStatus.error:
-              return AppErrorView(
-                message: userState.errorMessage ?? 'Unknown error',
-                onRetry: () =>
-                    ref.read(userViewModelProvider.notifier).fetchUsers(),
-              );
-            case UserStatus.success:
-              if (userState.users.isEmpty) {
-                return const Center(child: Text("No users found."));
-              }
-              return ListView.separated(
-                itemCount: userState.users.length,
-                separatorBuilder: (context, index) => const Divider(),
-                itemBuilder: (context, index) {
-                  final user = userState.users[index];
-                  return ListTile(
-                    leading: CircleAvatar(child: Text(user.name[0])),
-                    title: Text(user.name),
-                    subtitle: Text(user.email),
-                    trailing: const Icon(Icons.chevron_right),
-                    onTap: () {
-                      // Navigate to details (not implemented in this sample but structured for it)
-                      // context.goNamed('userDetails', pathParameters: {'id': user.id.toString()});
-                    },
-                  );
-                },
-              );
-            case UserStatus.initial:
-              return const SizedBox.shrink();
+          if (userState.status == UserStatus.error) {
+            return AppErrorView(
+              message: userState.errorMessage ?? 'Unknown error',
+              onRetry: () =>
+                  ref.read(userViewModelProvider.notifier).fetchUsers(),
+            );
           }
+
+          // 1. Page Load (Skeleton)
+          final isLoading = userState.status == UserStatus.loading;
+
+          return AppSkeleton(
+            enabled: isLoading,
+            child: ListView.separated(
+              itemCount: isLoading ? 10 : userState.users.length,
+              separatorBuilder: (context, index) => const Divider(),
+              padding: const EdgeInsets.all(AppDimens.spacingM),
+              itemBuilder: (context, index) {
+                if (isLoading) {
+                  return const SkeletonListTile();
+                }
+
+                final user = userState.users[index];
+                return UserListTile(
+                  name: user.name,
+                  email: user.email,
+                  onTap: () {
+                    // Handle tap
+                  },
+                );
+              },
+            ),
+          );
         },
       ),
     );
