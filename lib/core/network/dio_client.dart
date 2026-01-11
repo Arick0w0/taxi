@@ -7,7 +7,7 @@ final dioProvider = Provider<Dio>((ref) {
   dio.options.baseUrl = 'https://jsonplaceholder.typicode.com';
   dio.options.connectTimeout = const Duration(seconds: 5);
   dio.options.receiveTimeout = const Duration(seconds: 3);
-  
+
   dio.interceptors.add(
     InterceptorsWrapper(
       onRequest: (options, handler) {
@@ -17,7 +17,7 @@ final dioProvider = Provider<Dio>((ref) {
       },
       onError: (DioException e, handler) {
         if (e.response?.statusCode == 401) {
-             // Handle Unauthorized
+          // Handle Unauthorized
         }
         return handler.next(e);
       },
@@ -32,7 +32,10 @@ class DioClient {
 
   DioClient(this._dio);
 
-  Future<dynamic> get(String uri, {Map<String, dynamic>? queryParameters}) async {
+  Future<dynamic> get(
+    String uri, {
+    Map<String, dynamic>? queryParameters,
+  }) async {
     try {
       final response = await _dio.get(uri, queryParameters: queryParameters);
       return response.data;
@@ -54,9 +57,12 @@ class DioClient {
         if (statusCode == 401) {
           return UnauthorizedException("Unauthorized access");
         } else if (statusCode != null && statusCode >= 500) {
-           return ServerException("Server error", statusCode);
+          return ServerException("Server error", statusCode);
         }
-        return ServerException("Received invalid status code: $statusCode", statusCode);
+        return ServerException(
+          "Received invalid status code: $statusCode",
+          statusCode,
+        );
       case DioExceptionType.cancel:
         return NetworkException("Request cancelled");
       default:

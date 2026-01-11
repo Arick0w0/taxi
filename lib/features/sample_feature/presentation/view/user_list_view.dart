@@ -19,7 +19,7 @@ class _UserListViewState extends ConsumerState<UserListView> {
     super.initState();
     // Fetch data on init
     WidgetsBinding.instance.addPostFrameCallback((_) {
-       ref.read(userViewModelProvider.notifier).fetchUsers();
+      ref.read(userViewModelProvider.notifier).fetchUsers();
     });
   }
 
@@ -27,7 +27,7 @@ class _UserListViewState extends ConsumerState<UserListView> {
   Widget build(BuildContext context) {
     // Listen to connectivity changes globally for this view if needed
     final connectivityStatus = ref.watch(connectivityStatusProvider);
-    
+
     // Listen to ViewModel state
     final userState = ref.watch(userViewModelProvider);
 
@@ -37,51 +37,55 @@ class _UserListViewState extends ConsumerState<UserListView> {
         actions: [
           IconButton(
             icon: const Icon(Icons.refresh),
-            onPressed: () => ref.read(userViewModelProvider.notifier).fetchUsers(),
+            onPressed: () =>
+                ref.read(userViewModelProvider.notifier).fetchUsers(),
           ),
         ],
       ),
       body: Builder(
         builder: (context) {
-           // Optional: Show no internet screen if completely disconnected and no data
-           if (connectivityStatus.value == ConnectivityStatus.isDisconnected && userState.users.isEmpty) {
-             return AppErrorView.noInternet(
-               onRetry: () => ref.read(userViewModelProvider.notifier).fetchUsers(),
-             );
-           }
+          // Optional: Show no internet screen if completely disconnected and no data
+          if (connectivityStatus.value == ConnectivityStatus.isDisconnected &&
+              userState.users.isEmpty) {
+            return AppErrorView.noInternet(
+              onRetry: () =>
+                  ref.read(userViewModelProvider.notifier).fetchUsers(),
+            );
+          }
 
-           switch (userState.status) {
-             case UserStatus.loading:
-               return const AppLoadingIndicator();
-             case UserStatus.error:
-               return AppErrorView(
-                 message: userState.errorMessage ?? 'Unknown error',
-                 onRetry: () => ref.read(userViewModelProvider.notifier).fetchUsers(),
-               );
-             case UserStatus.success:
-               if (userState.users.isEmpty) {
-                 return const Center(child: Text("No users found."));
-               }
-               return ListView.separated(
-                 itemCount: userState.users.length,
-                 separatorBuilder: (context, index) => const Divider(),
-                 itemBuilder: (context, index) {
-                   final user = userState.users[index];
-                   return ListTile(
-                     leading: CircleAvatar(child: Text(user.name[0])),
-                     title: Text(user.name),
-                     subtitle: Text(user.email),
-                     trailing: const Icon(Icons.chevron_right),
-                     onTap: () {
-                       // Navigate to details (not implemented in this sample but structured for it)
-                       // context.goNamed('userDetails', pathParameters: {'id': user.id.toString()});
-                     },
-                   );
-                 },
-               );
-             case UserStatus.initial:
-               return const SizedBox.shrink(); 
-           }
+          switch (userState.status) {
+            case UserStatus.loading:
+              return const AppLoadingIndicator();
+            case UserStatus.error:
+              return AppErrorView(
+                message: userState.errorMessage ?? 'Unknown error',
+                onRetry: () =>
+                    ref.read(userViewModelProvider.notifier).fetchUsers(),
+              );
+            case UserStatus.success:
+              if (userState.users.isEmpty) {
+                return const Center(child: Text("No users found."));
+              }
+              return ListView.separated(
+                itemCount: userState.users.length,
+                separatorBuilder: (context, index) => const Divider(),
+                itemBuilder: (context, index) {
+                  final user = userState.users[index];
+                  return ListTile(
+                    leading: CircleAvatar(child: Text(user.name[0])),
+                    title: Text(user.name),
+                    subtitle: Text(user.email),
+                    trailing: const Icon(Icons.chevron_right),
+                    onTap: () {
+                      // Navigate to details (not implemented in this sample but structured for it)
+                      // context.goNamed('userDetails', pathParameters: {'id': user.id.toString()});
+                    },
+                  );
+                },
+              );
+            case UserStatus.initial:
+              return const SizedBox.shrink();
+          }
         },
       ),
     );

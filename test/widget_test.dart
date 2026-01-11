@@ -15,7 +15,7 @@ void main() {
     // We expect the app to start. Since default auth is true, it should show Home.
     // However, without mocking API, it might show error or loading.
     // But the separate AppBar 'Users' should be visible.
-    await tester.pump(); 
+    await tester.pump();
     // Just verify the app launches without crashing
     expect(find.byType(MyApp), findsOneWidget);
   });

@@ -1,18 +1,16 @@
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-enum ConnectivityStatus {
-  isConnected,
-  isDisconnected,
-  isUnknown,
-}
+enum ConnectivityStatus { isConnected, isDisconnected, isUnknown }
 
 class ConnectivityService {
   final Connectivity _connectivity = Connectivity();
 
   Stream<ConnectivityStatus> get connectivityStream {
-    return _connectivity.onConnectivityChanged.map((List<ConnectivityResult> results) {
-      if (results.contains(ConnectivityResult.mobile) || 
+    return _connectivity.onConnectivityChanged.map((
+      List<ConnectivityResult> results,
+    ) {
+      if (results.contains(ConnectivityResult.mobile) ||
           results.contains(ConnectivityResult.wifi) ||
           results.contains(ConnectivityResult.ethernet)) {
         return ConnectivityStatus.isConnected;
@@ -21,10 +19,10 @@ class ConnectivityService {
       }
     });
   }
-  
+
   Future<ConnectivityStatus> checkConnectivity() async {
     final results = await _connectivity.checkConnectivity();
-    if (results.contains(ConnectivityResult.mobile) || 
+    if (results.contains(ConnectivityResult.mobile) ||
         results.contains(ConnectivityResult.wifi) ||
         results.contains(ConnectivityResult.ethernet)) {
       return ConnectivityStatus.isConnected;

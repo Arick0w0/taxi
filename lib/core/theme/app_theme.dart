@@ -41,10 +41,7 @@ class AppTheme {
         displayLarge: AppTextStyles.displayLarge,
         bodyLarge: AppTextStyles.bodyLarge,
         labelLarge: AppTextStyles.labelLarge,
-      ).apply(
-        bodyColor: Colors.white, 
-        displayColor: Colors.white,
-      ),
+      ).apply(bodyColor: Colors.white, displayColor: Colors.white),
       appBarTheme: const AppBarTheme(
         backgroundColor: AppColors.surfaceDark,
         foregroundColor: Colors.white,
