@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
 /// The base wrapper for all Skeleton loading states in the app.
-/// 
+///
 /// Usage: Wraps a widget (like ListView) to animate it.
 /// If [enabled] is true, the child is rendered as a Skeleton.
 class AppSkeleton extends StatelessWidget {
@@ -24,9 +24,9 @@ class AppSkeleton extends StatelessWidget {
     return Skeletonizer(
       enabled: enabled,
       containersColor: containersColor ? Colors.grey.shade300 : null,
-      // Centralized Effect config for the entire app. 
+      // Centralized Effect config for the entire app.
       // Change here to switch between Shimmer/Pulse globally.
-      effect: effect ?? const ShimmerEffect(), 
+      effect: effect ?? const ShimmerEffect(),
       child: child,
     );
   }

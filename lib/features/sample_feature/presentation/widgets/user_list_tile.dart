@@ -22,14 +22,8 @@ class UserListTile extends StatelessWidget {
       contentPadding: const EdgeInsets.symmetric(
         horizontal: AppDimens.spacingM,
       ),
-      leading: CircleAvatar(
-        radius: AppDimens.iconM,
-        child: Text(initial),
-      ),
-      title: Text(
-        name,
-        style: Theme.of(context).textTheme.bodyLarge,
-      ),
+      leading: CircleAvatar(radius: AppDimens.iconM, child: Text(initial)),
+      title: Text(name, style: Theme.of(context).textTheme.bodyLarge),
       subtitle: Text(email),
       trailing: const Icon(Icons.chevron_right),
       onTap: onTap,
